@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>websocket 实时通信</title>
+</head>
+<style>
+    .right {
+        text-align: right;
+    }
+    
+    .self span {
+        background-color: green;
+    }
+    
+    .right span {
+        background-color: violet;
+    }
+    
+    span {
+        display: inline-block;
+        height: 20px;
+        line-height: 20px;
+        border-radius: 5px;
+        color: white;
+        padding: 0px 20px;
+    }
+</style>
+
+<body>
+    <input id="say" type="text">
+    <button id="send">发送</button>
+    <div id="datas">
+
+    </div>
+
+</body>
+<script>
+    const ws = new WebSocket("ws://localhost:3000");
+    const datas = document.getElementById("datas");
+    // 监听连接是否打开
+    ws.addEventListener('open', function() {
+        console.log("连接打开");
+    })
+
+    // 监听来自服务发来的链接
+
+    ws.addEventListener("message", data => {
+        let p = document.createElement("p");
+        p.className = "self";
+        p.innerHTML = `<span>${data.data}</span>`;
+        datas.appendChild(p);
+    })
+
+    document.getElementById("send").addEventListener("click", function() {
+        let value = document.getElementById("say").value;
+        if (value) {
+            ws.send(value);
+            let p = document.createElement("p");
+            p.className = "right";
+            p.innerHTML = `<span>${value}</span>`;
+            datas.appendChild(p);
+        }
+    })
+</script>
+
+</html>
