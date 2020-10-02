@@ -25,7 +25,17 @@
         line-height: 20px;
         border-radius: 5px;
         color: white;
-        padding: 0px 20px;
+        padding: 5px 20px;
+    }
+    
+    .center {
+        text-align: center;
+    }
+    
+    .center span {
+        background-color: #f5f5f5;
+        color: #555555;
+        font-size: 12px;
     }
 </style>
 
@@ -48,22 +58,44 @@
     // 监听来自服务发来的链接
 
     ws.addEventListener("message", data => {
-        let p = document.createElement("p");
-        p.className = "self";
-        p.innerHTML = `<span>${data.data}</span>`;
-        datas.appendChild(p);
+        let message = JSON.parse(data.data);
+        // console.log(message);
+        switch (message.type) {
+            case 0:
+                append(datas, "center", message.data);
+                break;
+
+            case 1:
+                append(datas, "self", message.data);
+                break;
+        }
     })
 
     document.getElementById("send").addEventListener("click", function() {
         let value = document.getElementById("say").value;
         if (value) {
             ws.send(value);
-            let p = document.createElement("p");
-            p.className = "right";
-            p.innerHTML = `<span>${value}</span>`;
-            datas.appendChild(p);
+            append(datas, "right", value);
         }
     })
+
+    function append(container, className, value) {
+        let p = document.createElement("p");
+        // switch (type) {
+        //     case "right":
+
+        //         break;
+        //     case "center":
+
+        //         break;
+        //     case "self":
+
+        //         break;
+        // }
+        p.className = className;
+        p.innerHTML = `<span>${value}</span>`;
+        container.appendChild(p);
+    }
 </script>
 
 </html>

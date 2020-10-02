@@ -7,18 +7,26 @@ let count = 0; //记录加入聊天室的人数
 const server = ws.createServer(connect => {
     console.log('连接成功！');
     // 每当接受用户数据，这个函数就会触发
-
     count++;
     connect.userName = `用户${count}`; //给每一个用户起一个名字;
     connect.id = count;
-    broadcast(`${connect.userName}进入了聊天室！`);
+    broadcast(JSON.stringify({
+        type: 0,
+        data: `${connect.userName}进入了聊天室！`
+    }));
     connect.on("text", data => {
         // 当接受到一个用户的信息，就要告诉所有人这个信息
-        broadcast1(`${connect.userName}:${data}`, connect);
+        broadcast1(JSON.stringify({
+            type: 1,
+            data: `${connect.userName}:${data}`
+        }), connect);
     })
 
     connect.on("close", () => {
-        broadcast(`${ connect.userName}离开了聊天室！`);
+        broadcast(JSON.stringify({
+            type: 0,
+            data: `${connect.userName}离开了聊天室！`
+        }));
         // 告诉所有人，有人离开了
     })
 
